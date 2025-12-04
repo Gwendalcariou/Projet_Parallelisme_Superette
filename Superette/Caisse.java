@@ -13,7 +13,7 @@ public class Caisse {
     private int nb = 0;
 
     // un seul client à la fois à la caisse
-    private final Semaphore accesCaisse = new Semaphore(1, true);
+    private final Semaphore accesCaisse = new Semaphore(1);
 
     // synchro du paiement
     private final Object paiementLock = new Object();

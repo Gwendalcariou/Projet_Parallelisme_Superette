@@ -1,19 +1,19 @@
 package Superette;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class ParcChariots {
 
     private final Semaphore dispo; // nombre de chariots disponibles
-    private final Deque<Chariot> chariotsLibres = new ArrayDeque<>();
+    private final List<Chariot> chariotsLibres = new ArrayList<>();
 
     public ParcChariots(int nbChariots) {
         // true = sémaphore "équitable" (ordre d'arrivée)
         this.dispo = new Semaphore(nbChariots, true);
         for (int i = 1; i <= nbChariots; i++) {
-            chariotsLibres.addLast(new Chariot(i));
+            chariotsLibres.add(new Chariot(i));
         }
     }
 
@@ -24,7 +24,7 @@ public class ParcChariots {
     public Chariot prendreChariot(String nomClient) throws InterruptedException {
         dispo.acquire(); // attend un "laisser-passer"
         synchronized (chariotsLibres) {
-            Chariot c = chariotsLibres.removeFirst();
+            Chariot c = chariotsLibres.remove(0);
             System.out.println("[" + nomClient + "] Le client prend " + c);
             return c;
         }
@@ -35,7 +35,7 @@ public class ParcChariots {
      */
     public void rendreChariot(Chariot c, String nomClient) {
         synchronized (chariotsLibres) {
-            chariotsLibres.addLast(c);
+            chariotsLibres.add(c);
             System.out.println("[" + nomClient + "] Le client rend " + c);
         }
         dispo.release(); // rend un laisser-passer
